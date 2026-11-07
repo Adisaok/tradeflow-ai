@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TradeFlow AI | Global Payments Workspace</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--ink:#17243b;--muted:#718096;--brand:#2357d8;--line:#e5eaf2;--green:#13865b;--orange:#b76b12}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,Arial,sans-serif;color:var(--ink)}
+.layout{display:flex;min-height:100vh}.sidebar{width:235px;background:#14233e;color:white;padding:27px 18px;flex-shrink:0}
+.logo{font-size:21px;font-weight:800;margin-bottom:8px}.logo span{color:#76a3ff}.tag{font-size:11px;color:#aebbd0;margin-bottom:40px}
+.nav{padding:12px 13px;border-radius:9px;color:#d6dfed;margin:7px 0;font-size:14px}.nav.active{background:#294775;color:white}
+.side-note{margin-top:50px;font-size:11px;color:#aebbd0;line-height:1.7}
+main{flex:1;padding:30px;max-width:1500px;margin:auto;width:100%}
+.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:26px;gap:15px}
+h1{font-size:25px;margin:0 0 6px}.sub{font-size:13px;color:var(--muted)}
+.pill{background:#e5f5ed;color:#13794e;padding:8px 12px;border-radius:20px;font-size:12px;font-weight:700}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:19px}
+.stat-label{font-size:12px;color:var(--muted)}.stat-value{font-size:25px;font-weight:750;margin-top:10px}
+.columns{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.85fr);gap:18px}
+h2{font-size:16px;margin:0 0 17px}.field{margin-bottom:14px}
+label{display:block;font-size:12px;color:#536176;font-weight:650;margin-bottom:7px}
+input,select,textarea{width:100%;border:1px solid #dce3ed;border-radius:8px;padding:11px 12px;font-size:13px;background:white;color:var(--ink)}
+textarea{min-height:100px;resize:vertical}
+button{border:0;border-radius:8px;background:var(--brand);color:white;padding:12px 16px;font-weight:700;cursor:pointer}
+button:hover{filter:brightness(.94)}button:disabled{opacity:.5;cursor:not-allowed}
+.secondary{background:#edf2fa;color:#29436c}.confirm{background:#e4f5ec;color:#13794e;padding:8px 10px;font-size:11px}
+.preview{background:#f5f8ff;border:1px solid #dce7ff;border-radius:10px;padding:15px;margin:15px 0}
+.preview-row{display:flex;justify-content:space-between;margin:9px 0;font-size:13px}
+.preview-row.total{border-top:1px solid #dce4f3;padding-top:12px;font-weight:800;font-size:15px}
+.notice{font-size:11px;color:#8b611c;background:#fff7e8;padding:10px;border-radius:8px;line-height:1.5}
+.ai{background:linear-gradient(140deg,#172e55,#244b83);color:white;border:0}
+.ai h2{display:flex;gap:8px;align-items:center}.ai p{font-size:13px;line-height:1.65;color:#dce7fa}
+.ai .field label{color:#dce7fa}.ai textarea{background:#fff}
+.ai-output{background:#ffffff16;border:1px solid #ffffff25;padding:13px;border-radius:9px;font-size:12px;line-height:1.6;min-height:65px;white-space:pre-wrap}
+.table-card{margin-top:19px;overflow:hidden}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;font-size:12px;min-width:680px}
+th,td{text-align:left;padding:13px 10px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:650;background:#fafbfd}
+.status{font-size:10px;padding:5px 8px;border-radius:20px;background:#fff1db;color:#9b5b0b}
+.status.success{background:#e5f5ed;color:#13794e}
+.empty{padding:25px;text-align:center;color:var(--muted)}
+.footer{text-align:center;color:var(--muted);font-size:11px;margin:22px}
+#message{font-size:12px;margin:10px 0;color:var(--green)}
+@media(max-width:900px){.stats{grid-template-columns:repeat(2,1fr)}.columns{grid-template-columns:1fr}}
+@media(max-width:600px){.sidebar{display:none}main{padding:17px}.top{align-items:flex-start;flex-direction:column}.stats{gap:9px}.card{padding:14px}.stat-value{font-size:21px}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <div class="logo">TradeFlow <span>AI</span></div>
+  <div class="tag">GLOBAL SME PAYMENT WORKSPACE</div>
+  <div class="nav active">▦ &nbsp; Overview</div>
+  <div class="nav">⇄ &nbsp; International payments</div>
+  <div class="nav">♧ &nbsp; Vendors</div>
+  <div class="nav">◷ &nbsp; Transactions</div>
+  <div class="nav">✧ &nbsp; AI assistant</div>
+  <div class="side-note">BUILDATHON EDITION<br>NGN funding workspace<br><br>Payment execution is simulated. No real funds are transferred.</div>
+</aside>
+<main>
+  <header class="top">
+    <div><h1>Business overview</h1><div class="sub" id="businessName">Your international payment workspace</div></div>
+    <div class="pill">● Demo environment</div>
+  </header>
+
+  <section class="stats">
+    <div class="card"><div class="stat-label">Total payment instructions</div><div class="stat-value" id="totalCount">—</div></div>
+    <div class="card"><div class="stat-label">Awaiting confirmation</div><div class="stat-value" id="pendingCount">—</div></div>
+    <div class="card"><div class="stat-label">Simulated successful</div><div class="stat-value" id="successCount">—</div></div>
+    <div class="card"><div class="stat-label">Destination currencies</div><div class="stat-value">05</div></div>
+  </section>
+
+  <section class="columns">
+    <div class="card">
+      <h2>＋ Create international payment</h2>
+      <div class="field"><label>Payee / Vendor</label><select id="vendor"></select></div>
+      <div class="field"><label>Amount to fund (NGN)</label><input id="amount" type="number" min="1" step="0.01" value="100000"></div>
+      <div class="field"><label>Destination currency</label>
+        <select id="currency">
+          <option value="USD">🇺🇸 USD — US Dollar</option>
+          <option value="GBP">🇬🇧 GBP — British Pound</option>
+          <option value="EUR">🇪🇺 EUR — Euro</option>
+          <option value="CAD">🇨🇦 CAD — Canadian Dollar</option>
+          <option value="GHS">🇬🇭 GHS — Ghanaian Cedi</option>
+        </select>
+      </div>
+      <div class="field"><label>Payment purpose</label><input id="purpose" value="International supplier invoice payment"></div>
+      <div class="preview">
+        <div class="preview-row"><span>Illustrative exchange rate</span><strong id="rate">—</strong></div>
+        <div class="preview-row"><span>Vendor receives</span><strong id="receives">—</strong></div>
+        <div class="preview-row"><span>Processing fee (1.5%)</span><strong id="fee">—</strong></div>
+        <div class="preview-row total"><span>Total estimated debit</span><strong id="totalDebit">—</strong></div>
+        <div class="notice">Illustrative demo rates and fees only. Not live FX quotations or confirmed provider prices.</div>
+      </div>
+      <button id="createPayment">Create payment preview</button>
+      <div id="message"></div>
+    </div>
+
+    <div class="card ai">
+      <h2>✧ TradeFlow AI Copilot</h2>
+      <p>Paste invoice text to extract payment information and receive an initial review before preparing a payment.</p>
+      <div class="field"><label>Invoice text</label>
+        <textarea id="invoice" placeholder="Example: Invoice INV-2026-104&#10;Vendor: Acme Supplies Ltd&#10;Amount: USD 2500&#10;Purpose: Software services"></textarea>
+      </div>
+      <button id="analyze" class="secondary">Analyze invoice</button>
+      <div style="height:13px"></div>
+      <div class="ai-output" id="aiOutput">Your invoice analysis and payment explanation will appear here.</div>
+      <p style="font-size:10px">Prototype invoice assistant: rule-based extraction and checks. AI/LLM integration is a planned next step. Always verify extracted details before payment.</p>
+    </div>
+  </section>
+
+  <section class="card table-card">
+    <h2>Recent transactions</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Reference</th><th>Destination</th><th>Funding amount</th><th>Vendor receives</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody id="transactions"><tr><td colspan="6" class="empty">Loading transactions...</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+  <div class="footer">TradeFlow AI · Buildathon demonstration · Simulated payments only</div>
+</main>
+</div>
+
+<script>
+const API = "/api/v1";
+let businessId = null, vendors = [], rates = {};
+const fmt = (n, currency="NGN") => new Intl.NumberFormat("en-NG",{style:"currency",currency,maximumFractionDigits:2}).format(Number(n));
+const $ = id => document.getElementById(id);
+
+async function api(path, options={}) {
+  const response = await fetch(API + path, {
+    ...options,
+    headers: {"Content-Type":"application/json",...(options.headers||{})}
+  });
+  const data = await response.json();
+  if (!response.ok) throw new Error(data.detail || "Request failed");
+  return data;
+}
+async function init() {
+  try {
+    const businesses = await api("/businesses");
+    if (!businesses.length) throw new Error("Create a business through the API before using the dashboard.");
+    businessId = businesses[0].id;
+    $("businessName").textContent = businesses[0].display_name || businesses[0].legal_name;
+    vendors = await api(`/businesses/${businessId}/vendors`);
+    $("vendor").innerHTML = vendors.map(v=>`<option value="${v.id}">${escapeHtml(v.name)} · ${v.country_code}</option>`).join("");
+    $("vendor").addEventListener("change", () => {
+      const selected = vendors.find(v => v.id === $("vendor").value);
+      if (selected && rates[selected.preferred_currency]) {
+        $("currency").value = selected.preferred_currency;
+        updatePreview();
+      }
+    });
+    if (!vendors.length) $("vendor").innerHTML = '<option value="">No vendors available</option>';
+    const supported = await api(`/businesses/${businessId}/payments/supported-currencies`);
+    supported.rates.forEach(r=>rates[r.currency]=Number(r.ngn_per_unit));
+    if (vendors.length) {
+      $("currency").value = vendors[0].preferred_currency;
+    }
+    updatePreview();
+    await refreshPayments();
+  } catch(e) { $("message").textContent = e.message; }
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function updatePreview() {
+  const amount = Number($("amount").value || 0), currency = $("currency").value;
+  const rate = rates[currency] || 0, fee = Math.max(amount * .015, 500);
+  $("rate").textContent = rate ? `₦${rate.toLocaleString()} / ${currency}` : "—";
+  $("receives").textContent = rate && amount>0 ? fmt(amount/rate,currency) : "—";
+  $("fee").textContent = fmt(fee);
+  $("totalDebit").textContent = fmt(amount+fee);
+}
+$("amount").addEventListener("input",updatePreview);
+$("currency").addEventListener("change",updatePreview);
+
+$("createPayment").addEventListener("click", async()=>{
+  try {
+    if (!vendors.length) throw new Error("Add a vendor before creating a payment.");
+    const amount = Number($("amount").value);
+    if (!(amount>0)) throw new Error("Enter a valid funding amount.");
+    $("createPayment").disabled = true;
+    const payment = await api(`/businesses/${businessId}/payments`,{
+      method:"POST",
+      body:JSON.stringify({
+        vendor_id:$("vendor").value,
+        source_amount:amount.toFixed(2),
+        destination_currency:$("currency").value,
+        purpose:$("purpose").value
+      })
+    });
+    $("message").textContent = `Payment preview created: ${payment.reference}`;
+    $("aiOutput").textContent =
+      `Payment explanation\n\nYou are preparing to fund ${fmt(payment.source_amount)}. The vendor is estimated to receive ${fmt(payment.destination_amount,payment.destination_currency)}. The illustrative fee is ${fmt(payment.fee_amount)}. Total estimated debit: ${fmt(payment.total_debit)}.\n\nStatus: Awaiting your explicit confirmation. This is a simulated payment, not a live transfer.`;
+    await refreshPayments();
+  } catch(e) {$("message").textContent=e.message;}
+  finally {$("createPayment").disabled=false;}
+});
+
+async function refreshPayments() {
+  const payments = await api(`/businesses/${businessId}/payments`);
+  $("totalCount").textContent = payments.length;
+  $("pendingCount").textContent = payments.filter(p=>p.status==="pending_confirmation").length;
+  $("successCount").textContent = payments.filter(p=>p.status==="simulated_success").length;
+  $("transactions").innerHTML = payments.map(p=>`
+    <tr>
+      <td><strong>${escapeHtml(p.reference)}</strong></td>
+      <td>${escapeHtml(p.destination_currency)}</td>
+      <td>${fmt(p.source_amount)}</td>
+      <td>${fmt(p.destination_amount,p.destination_currency)}</td>
+      <td><span class="status ${p.status==="simulated_success"?"success":""}">${escapeHtml(p.status)}</span></td>
+      <td>${p.status==="pending_confirmation"
+        ? `<button class="confirm" onclick="confirmPayment('${p.id}')">Confirm demo</button>`
+        : "—"}</td>
+    </tr>`).join("") || '<tr><td colspan="6" class="empty">No transactions yet.</td></tr>';
+}
+async function confirmPayment(id) {
+  if (!confirm("Confirm this simulated payment? No real funds will be transferred.")) return;
+  try {
+    await api(`/businesses/${businessId}/payments/${id}/confirm`,{method:"POST",body:"{}"});
+    $("message").textContent="Simulated payment confirmed.";
+    await refreshPayments();
+  } catch(e) {$("message").textContent=e.message;}
+}
+
+$("analyze").addEventListener("click",()=>{
+  const text = $("invoice").value.trim();
+
+  if (!text) {
+    $("aiOutput").textContent = "Paste invoice text to begin analysis.";
+    return;
+  }
+
+  const amountMatch =
+    text.match(/(?:amount|total|due|invoice value)?\s*[:=]?\s*(USD|GBP|EUR|CAD|GHS)\s*([\d,]+(?:\.\d{1,2})?)/i)
+    || text.match(/([\d,]+(?:\.\d{1,2})?)\s*(USD|GBP|EUR|CAD|GHS)/i);
+
+  let currency = null;
+  let amount = null;
+
+  if (amountMatch) {
+    if (/^(USD|GBP|EUR|CAD|GHS)$/i.test(amountMatch[1])) {
+      currency = amountMatch[1].toUpperCase();
+      amount = Number(amountMatch[2].replace(/,/g,""));
+    } else {
+      amount = Number(amountMatch[1].replace(/,/g,""));
+      currency = amountMatch[2].toUpperCase();
+    }
+  }
+
+  const invoiceMatch = text.match(
+    /(?:invoice|inv(?:oice)?\s*(?:no|number|#)?)[\s:#-]*([A-Z0-9-]+)/i
+  );
+  const vendorMatch = text.match(/vendor\s*:\s*([^\n]+)/i);
+
+  const issues = [];
+
+  if (!amountMatch || !amount || amount <= 0) {
+    issues.push("Invoice amount and supported currency could not be reliably extracted.");
+  }
+
+  if (!vendorMatch) {
+    issues.push("Vendor name was not detected.");
+  }
+
+  if (!invoiceMatch) {
+    issues.push("Invoice reference was not detected.");
+  }
+
+  const selectedVendor = vendors.find(
+    v => v.id === $("vendor").value
+  );
+
+  if (currency && selectedVendor &&
+      currency !== selectedVendor.preferred_currency) {
+    issues.push(
+      `Currency mismatch: invoice is ${currency}, but selected vendor prefers ${selectedVendor.preferred_currency}.`
+    );
+  }
+
+  if (vendorMatch && selectedVendor) {
+    const invoiceVendor = vendorMatch[1].trim().toLowerCase();
+    const selectedName = selectedVendor.name.toLowerCase();
+
+    if (!invoiceVendor.includes(selectedName) &&
+        !selectedName.includes(invoiceVendor)) {
+      issues.push(
+        `Vendor mismatch: invoice names ${vendorMatch[1].trim()}, but selected vendor is ${selectedVendor.name}.`
+      );
+    }
+  }
+
+  let result = "INVOICE REVIEW — PROTOTYPE\n\n";
+
+  result += `Extracted vendor: ${vendorMatch ? vendorMatch[1].trim() : "Not detected"}\n`;
+  result += `Invoice reference: ${invoiceMatch ? invoiceMatch[1] : "Not detected"}\n`;
+  result += `Invoice amount: ${amountMatch && amount > 0 ? fmt(amount,currency) : "Not detected"}\n`;
+  result += `Invoice currency: ${currency || "Not detected"}\n`;
+  result += `Selected vendor: ${selectedVendor ? selectedVendor.name : "Not selected"}\n\n`;
+
+  if (issues.length) {
+    result += "REVIEW FLAGS\n• " + issues.join("\n• ") + "\n\n";
+  } else {
+    result += "Initial checks passed. Verify the extracted information against the original invoice.\n\n";
+  }
+
+  if (currency && rates[currency] && amount > 0) {
+    const ngn = amount * rates[currency];
+    const fee = Math.max(ngn * .015, 500);
+
+    result += `Illustrative funding estimate: ${fmt(ngn)}\n`;
+    result += `Illustrative fee: ${fmt(fee)}\n`;
+    result += `Estimated total: ${fmt(ngn + fee)}\n\n`;
+  }
+
+  result += "No payment instruction has been changed or authorized by this analysis.";
+  result += "\n\nRule-based prototype extraction, not verified AI/OCR. Human review is required.";
+
+  $("aiOutput").textContent = result;
+});
+
+init();
+</script>
+</body>
+</html>
