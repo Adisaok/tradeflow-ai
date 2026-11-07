@@ -17,3 +17,7 @@ TradeFlow AI is a buildathon prototype that helps Nigerian SMEs prepare and revi
 ## Technology
 
 Python 3.13, FastAPI, Pydantic, SQLAlchemy, PostgreSQL, Redis, Alembic, HTML, CSS, JavaScript, Pytest and Docker Compose.
+
+## Blaaiz Integration Status
+
+Blaaiz sandbox access is pending KYB verification. This buildathon prototype uses the clearly labelled mock integration permitted by the brief. It does not make live Blaaiz API requests or transfer real funds. Live authentication, quote retrieval, payout creation and webhook-based tracking remain planned integration milestones.
