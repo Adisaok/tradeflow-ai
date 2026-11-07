@@ -17,8 +17,9 @@ from app.models import Business, Vendor  # noqa: F401
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Local development only. Use Alembic migrations before production.
-    async with engine.begin() as connection:
-        await connection.run_sync(Base.metadata.create_all)
+    if settings.app_env == "local":
+        async with engine.begin() as connection:
+            await connection.run_sync(Base.metadata.create_all)
 
     yield
 

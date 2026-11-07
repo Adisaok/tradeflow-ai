@@ -206,3 +206,18 @@ async def test_business_cannot_update_another_business_vendor(client):
 
     assert owner_response.status_code == 200
     assert owner_response.json()[0]["name"] == "Protected Vendor"
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "field",
+    ["name", "country_code", "preferred_currency"],
+)
+async def test_update_vendor_rejects_null_required_fields(client, field):
+    business = await create_business(client, "Null Validation Limited")
+    vendor = await create_vendor(client, business["id"])
+
+    response = await client.patch(
+        f"/api/v1/businesses/{business['id']}/vendors/{vendor['id']}",
+        json={field: None},
+    )
+
+    assert response.status_code == 422

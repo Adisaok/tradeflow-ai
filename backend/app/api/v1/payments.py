@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from decimal import Decimal, ROUND_HALF_UP
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.session import get_db
@@ -158,30 +158,39 @@ async def confirm_simulated_payment(
 ):
     await check_business(business_id, db)
 
-    payment = await db.scalar(
-        select(Payment).where(
+    confirmed_at = datetime.now(timezone.utc)
+
+    result = await db.execute(
+        update(Payment)
+        .where(
             Payment.id == payment_id,
             Payment.business_id == business_id,
+            Payment.status == "pending_confirmation",
         )
+        .values(
+            status="simulated_success",
+            confirmed_at=confirmed_at,
+        )
+        .returning(Payment)
     )
 
+    payment = result.scalar_one_or_none()
+
     if payment is None:
-        raise HTTPException(
-            status_code=404,
-            detail="Payment not found",
+        existing_payment = await db.scalar(
+            select(Payment).where(
+                Payment.id == payment_id,
+                Payment.business_id == business_id,
+            )
         )
 
-    if payment.status != "pending_confirmation":
+        if existing_payment is None:
+            raise HTTPException(status_code=404, detail="Payment not found")
+
         raise HTTPException(
             status_code=409,
-            detail=(
-                "Payment cannot be confirmed from status: "
-                f"{payment.status}"
-            ),
+            detail=f"Payment cannot be confirmed from status: {existing_payment.status}",
         )
-
-    payment.status = "simulated_success"
-    payment.confirmed_at = datetime.now(timezone.utc)
 
     await db.commit()
     await db.refresh(payment)

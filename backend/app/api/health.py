@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Response, status
 from sqlalchemy import text
 from redis.asyncio import Redis
 from app.core.config import settings
@@ -13,7 +13,7 @@ async def health():
 
 
 @router.get("/health/ready", summary="Readiness probe")
-async def readiness():
+async def readiness(response: Response):
     checks = {"database": "unknown", "redis": "unknown"}
     try:
         async with engine.connect() as connection:
@@ -29,4 +29,7 @@ async def readiness():
     except Exception:
         checks["redis"] = "error"
     ready = all(value == "ok" for value in checks.values())
+
+    if not ready:
+        response.status_code = status.HTTP_503_SERVICE_UNAVAILABLE
     return {"status": "ready" if ready else "not_ready", "checks": checks}

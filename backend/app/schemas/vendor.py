@@ -17,7 +17,6 @@ class VendorCreate(BaseModel):
     payment_method: str | None = Field(default=None, max_length=50)
     provider_recipient_id: str | None = Field(default=None, max_length=150)
     notes: str | None = None
-
     @field_validator("country_code")
     @classmethod
     def validate_country_code(cls, value: str) -> str:
@@ -38,6 +37,18 @@ class VendorUpdate(BaseModel):
     provider_recipient_id: str | None = Field(default=None, max_length=150)
     notes: str | None = None
     is_active: bool | None = None
+
+    @field_validator(
+        "name",
+        "country_code",
+        "preferred_currency",
+        mode="before",
+    )
+    @classmethod
+    def reject_null_required_fields(cls, value):
+        if value is None:
+            raise ValueError("This field cannot be null")
+        return value
 
     @field_validator("country_code")
     @classmethod
